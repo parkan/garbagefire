@@ -5,6 +5,7 @@ const json = fs.readFileSync('fb-staging.json', {encoding: 'utf8'});
 const data = JSON.parse(json);
 const keys = new Set(Object.keys(data));
 const keysSingular = new Set(Object.keys(data).map(s => s.substring(0, s.length - 1)));
+const idCache = new Map();
 
 var PUSH_CHARS = "-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz";
 function decode(id) {
@@ -18,8 +19,14 @@ function decode(id) {
 }
 
 function wrapId(id){
+    if(idCache.has(id)){
+        return idCache.get(id);
+    }
+
     if(id[0] === '-'){
-        return { '$oid': Math.floor(decode(id)/1000).toString(16) + crypto.randomBytes(8).toString('hex') };
+        const newId =  { '$oid': Math.floor(decode(id)/1000).toString(16) + crypto.randomBytes(8).toString('hex') };
+        idCache.set(id, newId);
+        return newId;
     } else {
         return id;
     }
