@@ -45,6 +45,7 @@ exports.process = function(){
                ...fields
             };
         });
-        fs.writeFileSync(type + '.json', JSON.stringify(transformed), {encoding: 'utf8'});
+        const joined = transformed.map(o => JSON.stringify(o)).join('\n');
+        fs.writeFileSync(type + '.json', joined, {encoding: 'utf8'});
     });
 }
