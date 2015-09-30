@@ -18,7 +18,11 @@ function decode(id) {
 }
 
 function wrapId(id){
-    return { '$oid': Math.floor(decode(id)/1000).toString(16) + crypto.randomBytes(8).toString('hex') };
+    if(id[0] === '-'){
+        return { '$oid': Math.floor(decode(id)/1000).toString(16) + crypto.randomBytes(8).toString('hex') };
+    } else {
+        return id;
+    }
 }
 
 exports.process = function(){
